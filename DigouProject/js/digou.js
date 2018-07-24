@@ -1,9 +1,51 @@
 
 $(document).ready(function(){
 
+    console.log("1");
+    function getPics(url, itemsid)
+    {
+        $.ajax({url:url,async:false})
+        .done(function(data){
+          // 请求完成后，执行的函数
+          console.log("done --- " + data[0]);
+          var arr = data[0].msg;
+          $.each(data, function(i,item) {
+                  $.each(item.msg, function( index, value ) {
+                    var imgs = document.querySelectorAll(itemsid);
+                    // for(var i = 0;i<imgs.length;i++)
+                    if(index < imgs.length)
+                    {
+                        var img = imgs[index];
+                        $(img).attr("src",value);
+                    }
+    
+                        //   var items = $("item1-list");
+                        //   $("item1-list").append("<li><a href=\"#\"><img class=\"image-1\" src=\""+value+"\" alt=\"\"></a></li>");
+                    });
+              }
+          );
+      })
+      .fail(function(data){
+          // 请求失败后，执行的函数
+          console.log("fail");
+      });
+    }
+
+    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item1","#image-1-list");
+    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item2","#image-2-list");
+    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item3","#image-3-list");
+    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item4","#image-4-list");
+    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item5","#image-5-list");
+
+
+
+
+
+
+
+
     $(window).scroll(function(){
         var top=$(document).scrollTop();
-        //console.log(top);
         var menu=$("#menu");
         var items=$("#content").find(".box-1");
         var currentID="";//当前所在楼层（item）#id

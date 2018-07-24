@@ -1,9 +1,10 @@
 import flask,os,time
 from flask import request,send_from_directory,jsonify
+from flask_cors import CORS
 
 app = flask.Flask(__name__)
 
-
+CORS(app, resources=r'/*')
 
 @app.route('/get_fileListContents',methods=['get'])
 def  get_fileListContents():
@@ -16,9 +17,15 @@ def  get_fileListContents():
 			result = []
 			for maindir, subdir, file_name_list in os.walk('./'+filename):
 					for filenametemp in file_name_list:
-						apath = os.path.join(os.getcwd(), filename +'/'+filenametemp)
-						newpath = 'file://' + apath;
-						result.append(newpath)
+						nameext = os.path.splitext(filenametemp)[1]
+						if nameext == '.jpg' or nameext == '.gif' or nameext == '.jpeg':
+							apath = os.path.join(os.getcwd(), filename +'/'+filenametemp)
+							newpath = 'file://' + apath;
+							result.append(newpath)
+
+						# apath = os.path.join(os.getcwd(), filename +'/'+filenametemp)
+						# newpath = 'file://' + apath;
+						# result.append(newpath)
 			return jsonify([{"msg":result}])
 		else:
 			return jsonify({"msg":"file is not exsit"})
