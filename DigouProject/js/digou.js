@@ -1,12 +1,23 @@
 
 $(document).ready(function(){
 
-    console.log("1");
+    var floor1 = "#image-1-list";
+    var floor2 = "#image-2-list";
+    var floor3 = "#image-3-list";
+    var floor4 = "#image-4-list";
+    var floor5 = "#image-5-list";
+    var floormap = new Map([[floor1, false], [floor2, false], [floor3, false], [floor4, false], [floor5, false]]);
     function getPics(url, itemsid)
     {
+        if(floormap.get(itemsid) === true)
+        {
+            return;
+        }
+
         $.ajax({url:url,async:false})
         .done(function(data){
           // 请求完成后，执行的函数
+          floormap.set(itemsid, true);
           console.log("done --- " + data[0]);
           var arr = data[0].msg;
           $.each(data, function(i,item) {
@@ -30,19 +41,6 @@ $(document).ready(function(){
           console.log("fail");
       });
     }
-
-    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item1","#image-1-list");
-    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item2","#image-2-list");
-    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item3","#image-3-list");
-    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item4","#image-4-list");
-    getPics("http://10.73.27.38:8888/get_fileListContents?fname=item5","#image-5-list");
-
-
-
-
-
-
-
 
     $(window).scroll(function(){
         var top=$(document).scrollTop();
@@ -88,30 +86,36 @@ $(document).ready(function(){
             //到达5楼
             // $('.dianTi').show();
             // $('.dianTi li').eq(4).addClass('current').siblings('li').removeClass('current');
+            getPics("http://10.73.27.38:8888/get_fileListContents?fname=item5","#image-5-list");
         }else if(windowScrollTop>=f4Top){
             console.log('到达4楼');
             $("a[href=\"#item"+4+"\"]").addClass("current");
             //到达4楼
             // $('.dianTi').show();
             // $('.dianTi li').eq(3).addClass('current').siblings('li').removeClass('current');
+            getPics("http://10.73.27.38:8888/get_fileListContents?fname=item4","#image-4-list");
         }else if(windowScrollTop>=f3Top){
             console.log('到达3楼');
             $("a[href=\"#item"+3+"\"]").addClass("current");
             //到达3楼
             // $('.dianTi').show();
             // $('.dianTi li').eq(2).addClass('current').siblings('li').removeClass('current');
+            getPics("http://10.73.27.38:8888/get_fileListContents?fname=item3","#image-3-list");
+
         }else if(windowScrollTop>=f2Top){
             console.log('到达2楼');
             $("a[href=\"#item"+2+"\"]").addClass("current");
             //到达2楼
             // $('.dianTi').show();
             // $('.dianTi li').eq(1).addClass('current').siblings('li').removeClass('current');
+            getPics("http://10.73.27.38:8888/get_fileListContents?fname=item2","#image-2-list");
         }else if(windowScrollTop>=f1Top){
             console.log('到达1楼');
             $("a[href=\"#item"+1+"\"]").addClass("current");
             //到达一楼
             // $('.dianTi').show();
             // $('.dianTi li').eq(0).addClass('current').siblings('li').removeClass('current');
+            getPics("http://10.73.27.38:8888/get_fileListContents?fname=item1","#image-1-list");
         }else{
             //不再5楼中的任意一层时，让电梯导航隐藏
             // $('.dianTi').hide();
@@ -120,4 +124,6 @@ $(document).ready(function(){
     $(window).scroll(function(){
         jianCe();
     });
+
+    jianCe();
 });
