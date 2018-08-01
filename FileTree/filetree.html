@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>简单的文件树效果</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+
+.tree dd,.tree dt, .tree dl{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+.tree dd{
+    margin-left:18px;
+}
+
+.tree dt{
+    background:url(res/page_text.gif) no-repeat 0 0px;
+    padding-left:35px;
+    line-height :20px;
+    height:20px;
+}
+
+.tree dt.node-close{
+    background-position: 0 -24px;
+    background:url(res/folder_close.png) no-repeat 0 0px;
+}
+
+.tree dt.node-open{
+    background-position: 0 -58px;
+    background:url(res/folder_open.png) no-repeat 0 0px;
+}
+
+.tree dt a{
+    color:#000;
+    text-decoration:none;
+    font: 12px/1 verdana;
+    line-height :12px;
+}
+
+.tree dt a:hover{
+    background:#0A246A;
+    color:#fff;
+}
+
+</style>
+</head>
+
+<body>
+
+<div>
+    <button type="button"  onclick="addFunction()">add</button>
+    <button type="button"  onclick="removeFunction()">remove</button>
+</div>
+<div id="esunTree" class="tree"></div>
+
+</body>
+
+
+<script type="text/javascript">
+
+function Tree(data, esunTreeid) {
+  this.app = function(par,tag){
+      return par.appendChild(document.createElement(tag));
+    };
+  this.create(document.getElementById(esunTreeid),data);
+};
+
+Tree.fn = Tree.prototype = {
+    create: function (par,group){
+
+    var host=this, length = group.length;
+
+    for (var i = 0; i < length; i++) {
+        var igroup = group[i];
+        // 1| igroup = {t:'盛大网络',s:[{t:'热血传奇',s:[{t:'在线充值'}]},{t:'陈天桥'}]},
+
+        
+        var dl = this.app(par,'DL');
+        var dt = this.app(dl,'DT');
+        var dd = this.app(dl,'DD');
+
+        dt.innerHTML='<a href="javascript:void(0)">'+igroup['t']+'</a>';
+        // 1| igroup['t'] = 盛大网络
+
+        if (!igroup['s']){
+            // 叶子节点
+            continue;
+        }
+        
+        // 2| group['s'] [{t:'热血传奇',s:[{t:'在线充值'}]},{t:'陈天桥'}]
+
+        dt.group = igroup['s'];
+        dt.className += " node-close";
+        dt.onclick = function (){
+            var dd = this.nextSibling;
+            // nextSibling 属性可返回某个元素之后紧跟的节点（处于同一树层级中）。
+            // 返回节点以节点对象返回。
+            // 注意： 如果元素紧跟后面没有节点则返回 null.
+            if (!dd.hasChildNodes()){
+                host.create(dd,this.group);
+                this.className='node-open';
+            }
+            else
+            {
+                var set= dd.style.display == 'none'?['','node-open']:['none','node-close'];
+                dd.style.display=set[0];
+                this.className=set[1];
+            }
+        }
+    }
+  }
+};
+
+var data=[
+  {
+    t:'floder1',s:[
+      {t:'floder1_1',s:[{t:'file'}]},
+      {t:'floder1_2',s:[{t:'file_1'},{t:'file_2'},{t:'file_2'},{t:'file_3'},{t:'file_4'},{t:'file_5'}]},
+      {t:'floder1_3',s:[{t:'floder1_3_1',s:[{t:'file_12'}]},{t:'floder1_3_2',s:[{t:'file_'}]}, {t:'floder1_3_3',s:[{t:'floder1_3_',s:[{t:'file_'}]},{t:'floder1_3_',s:[{t:'file_'}]}]}]}
+    ]
+  },
+  {t:'floder2',s:[{t:'file'}]},
+  {t:'floder3',s:[{t:'floder3_1',s:[{t:'file_1'}]},{t:'file_2'}]},
+  {t:'floder4',s:[{t:'file'}]},
+  {t:'file'}
+];
+
+var et = new Tree(data,'esunTree');
+
+function addFunction(){
+    data = [{t:'floder_new',s:[{t:'floder_1',s:[{t:'file_1'}]},{t:'file_2'}]}];
+    et = new Tree(data,'esunTree');
+}
+
+function removeFunction(){
+    var parent = document.getElementById("esunTree");
+    parent.removeChild(parent.lastChild);
+}
+</script>
+</html>
